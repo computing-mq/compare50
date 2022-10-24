@@ -4,6 +4,7 @@ import os
 import pathlib
 import pkg_resources
 import shutil
+import csv
 
 import attr
 import jinja2
@@ -129,6 +130,18 @@ def render(pass_to_results, dest):
                                            dest=dest.resolve())
     with open(dest / "index.html", "w") as f:
         f.write(rendered_index)
+        
+    with open(dest / "report.csv", "w") as f:
+        writer = csv.writer(f)
+        
+        for link in graph_info["links"]:
+            writer.writerow([link["source"].rsplit('/', 1)[1],
+                             link["target"].rsplit('/', 1)[1],
+                             link["value"]])
+            
+            writer.writerow([link["target"].rsplit('/', 1)[1],
+                             link["source"].rsplit('/', 1)[1],
+                             link["value"]])
 
     bar.update()
     return dest / "index.html"
